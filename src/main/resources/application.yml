@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/JWT
+    username: postgres
+    password: "@Amin0076"
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        database: postgresql
+
+  application:
+    security:
+      jwt:
+        secret-key: p/96nTbmNTAURX9e3mNnqA==
+        expiration: 86400000
+        refrsh-token:
+          expiration: 604800000
