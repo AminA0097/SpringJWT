@@ -1,4 +1,4 @@
-package com.springsecurity.springjwt.Service;
+package com.springsecurity.springjwt.JwtService;
 
 import com.springsecurity.springjwt.Entities.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 public class UserDetailImp implements UserDetails {
     private final User user;
@@ -47,6 +46,6 @@ public class UserDetailImp implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.getEnabled() == null || user.getEnabled();
     }
 }

@@ -1,31 +1,46 @@
 package com.springsecurity.springjwt.Entities;
 
+import com.springsecurity.springjwt.Base.BaseEntity;
+import com.springsecurity.springjwt.Base.BooleanConvertor;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 
 @Entity
 @Table(name = "USERTABLE")
-public class User {
+public class User extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "FLD_USER_ID")
-    private String id;
+    @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @Column(name = "FLD_USER_ID", nullable = false)
+    private Long id;
 
-    @Column(name = "FLD_USER_NAME",nullable = true, length = 50)
+    @Column(name = "FLD_USER_NAME",nullable = true, length = 255)
     private String usernamee;
 
-    @Column(name = "FLD_PASSWORD")
+    @Column(name = "FLD_PASSWORD",length = 255)
     private String password;
 
     @Column(name = "FLD_SYSROLE")
     private String sysRole;
 
-    public String getId() {
+    @Column(name = "FLD_ENABLE")
+    @Convert(converter = BooleanConvertor.class)
+    private Boolean enabled;
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

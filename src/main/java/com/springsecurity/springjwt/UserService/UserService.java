@@ -1,6 +1,5 @@
-package com.springsecurity.springjwt.Service;
+package com.springsecurity.springjwt.UserService;
 
-import com.springsecurity.springjwt.Dto.Login;
 import com.springsecurity.springjwt.Entities.User;
 
 import java.util.List;
