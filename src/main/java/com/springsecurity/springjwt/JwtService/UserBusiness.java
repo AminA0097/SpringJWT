@@ -1,12 +1,16 @@
 package com.springsecurity.springjwt.JwtService;
 
+import com.springsecurity.springjwt.Dto.ChangeRole;
 import com.springsecurity.springjwt.Dto.Login;
 import com.springsecurity.springjwt.Dto.SignUp;
 import com.springsecurity.springjwt.Entities.User;
 import com.springsecurity.springjwt.Exception.SignUpError;
 import com.springsecurity.springjwt.Repo.UserRepo;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceContext;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,26 +19,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
 
 @Service
-
-public class AuthenticationService {
+public class UserBusiness {
     private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationService(UserRepo userRepo, JwtService jwtService, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
+    public UserBusiness(UserRepo userRepo, JwtService jwtService, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
     }
-    @PersistenceContext
-    EntityManager entityManager;
+    @Autowired
+    private EntityManager entityManager;
     private final UserRepo userRepo;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -47,7 +47,6 @@ public class AuthenticationService {
         String jwt = jwtService.generateToken(new UserDetailImp(user));
         return jwt;
     }
-
     @Transactional
     public String signup(SignUp signUp){
         String query = "select count(*) from User u where u.usernamee=:username";
@@ -66,8 +65,25 @@ public class AuthenticationService {
         user.setUpdated("BYSYS");
         user.setCreatedDate(new Date());
         user.setUpdatedDate(new Date());
+        Update(user);
+        return signUp.getUserName();
+    }
+    @Transactional
+    public boolean changeRole(ChangeRole changeRole) {
+        User user = entityManager.createQuery("SELECT p FROM User p WHERE p.usernamee = :name", User.class)
+                .setParameter("name", changeRole.getUsername())
+                .getSingleResult();
+        user.setSysRole(changeRole.getRole());
+        user.setUpdatedDate(new Date());
+        user.setUpdated(SecurityContextHolder.getContext().getAuthentication().getName());
+        user.setUsernamee(changeRole.getUsername());
+        System.out.println(user.toString());
+        Update(user);
+        return true;
+    }
+    @Transactional
+    public void Update(User user) {
         entityManager.persist(user);
         entityManager.flush();
-        return signUp.getUserName();
     }
 }

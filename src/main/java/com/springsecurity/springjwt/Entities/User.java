@@ -44,6 +44,17 @@ public class User extends BaseEntity {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", usernamee='" + usernamee + '\'' +
+                ", password='" + password + '\'' +
+                ", sysRole='" + sysRole + '\'' +
+                ", enabled=" + enabled +
+                '}';
+    }
+
     public String getUsernamee() {
         return usernamee;
     }
