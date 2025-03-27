@@ -51,7 +51,9 @@ public class SecurityConfig  {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(authReq -> authReq.requestMatchers(HttpMethod.POST,"users/signin/**").permitAll()
                 .requestMatchers(HttpMethod.POST,"users/signup/**").permitAll()
-                .requestMatchers(HttpMethod.POST,"users/changerole/**").permitAll());
+                .requestMatchers(HttpMethod.POST,"users/changerole/**").hasAnyAuthority("ROLE_ZORO")
+                .requestMatchers(HttpMethod.GET,"/").permitAll()
+                .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.logout(logout -> logout.logoutSuccessUrl("/users/signin/")
                 .invalidateHttpSession(true)

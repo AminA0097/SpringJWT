@@ -1,14 +1,14 @@
-package com.springsecurity.springjwt.JwtService;
+package com.springsecurity.springjwt.Services;
 
 import com.springsecurity.springjwt.Dto.ChangeRole;
 import com.springsecurity.springjwt.Dto.Login;
 import com.springsecurity.springjwt.Dto.SignUp;
 import com.springsecurity.springjwt.Entities.User;
-import com.springsecurity.springjwt.Exception.SignUpError;
+import com.springsecurity.springjwt.Exception.UserErr;
+import com.springsecurity.springjwt.JwtService.JwtService;
+import com.springsecurity.springjwt.JwtService.UserDetailImp;
 import com.springsecurity.springjwt.Repo.UserRepo;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +33,7 @@ public class UserBusiness {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
     }
+
     @Autowired
     private EntityManager entityManager;
     private final UserRepo userRepo;
@@ -47,27 +48,34 @@ public class UserBusiness {
         String jwt = jwtService.generateToken(new UserDetailImp(user));
         return jwt;
     }
+
     @Transactional
-    public String signup(SignUp signUp){
+    public String signup(SignUp signUp) {
         String query = "select count(*) from User u where u.usernamee=:username";
         List rs = entityManager.createQuery(query)
-                .setParameter("username",signUp.getUserName()).getResultList();
+                .setParameter("username", signUp.getUserName()).getResultList();
+        if(!signUp.getPassword().equals(signUp.getConfirmPassword())) {
+            throw new UserErr("PassWord Does Not Match");
+        }
         if (Integer.parseInt(rs.get(0).toString()) > 0) {
-            throw new SignUpError();
-        };
+            throw new UserErr("Username already exists");
+        }
+        ;
         User user = new User();
         user.setUsernamee(signUp.getUserName());
         user.setPassword(passwordEncoder.encode(signUp.getPassword()));
         user.setDeleted(false);
         user.setEnabled(true);
         user.setSysRole("USER");
-        user.setCreated("BySYS");
-        user.setUpdated("BYSYS");
+        user.setCreated("SYS");
+        user.setUpdated("SYS");
         user.setCreatedDate(new Date());
         user.setUpdatedDate(new Date());
-        Update(user);
+        entityManager.persist(user);
+        entityManager.flush();
         return signUp.getUserName();
     }
+
     @Transactional
     public boolean changeRole(ChangeRole changeRole) {
         User user = entityManager.createQuery("SELECT p FROM User p WHERE p.usernamee = :name", User.class)
@@ -78,12 +86,7 @@ public class UserBusiness {
         user.setUpdated(SecurityContextHolder.getContext().getAuthentication().getName());
         user.setUsernamee(changeRole.getUsername());
         System.out.println(user.toString());
-        Update(user);
+        entityManager.merge(user);
         return true;
-    }
-    @Transactional
-    public void Update(User user) {
-        entityManager.persist(user);
-        entityManager.flush();
     }
 }

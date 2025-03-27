@@ -1,5 +1,6 @@
-package com.springsecurity.springjwt.Base;
+package com.springsecurity.springjwt.Entities;
 
+import com.springsecurity.springjwt.Config.BooleanConvertor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.MappedSuperclass;

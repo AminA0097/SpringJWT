@@ -1,10 +1,7 @@
 package com.springsecurity.springjwt.Entities;
 
-import com.springsecurity.springjwt.Base.BaseEntity;
-import com.springsecurity.springjwt.Base.BooleanConvertor;
+import com.springsecurity.springjwt.Config.BooleanConvertor;
 import jakarta.persistence.*;
-
-import java.io.Serializable;
 
 @Entity
 @Table(name = "USERTABLE")

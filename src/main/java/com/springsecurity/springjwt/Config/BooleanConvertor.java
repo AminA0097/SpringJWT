@@ -1,4 +1,4 @@
-package com.springsecurity.springjwt.Base;
+package com.springsecurity.springjwt.Config;
 
 import jakarta.persistence.AttributeConverter;
 
