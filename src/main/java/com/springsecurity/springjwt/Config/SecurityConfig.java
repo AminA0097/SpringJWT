@@ -50,9 +50,10 @@ public class SecurityConfig  {
         http.csrf(csrf -> csrf.disable());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(authReq -> authReq.requestMatchers(HttpMethod.POST,"users/signin/**").permitAll()
-                .requestMatchers(HttpMethod.POST,"users/signup/**").permitAll()
-                .requestMatchers(HttpMethod.POST,"users/changerole/**").hasAnyAuthority("ROLE_ZORO")
-                .requestMatchers(HttpMethod.GET,"/").permitAll()
+                .requestMatchers(HttpMethod.POST,"/signup/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/signin/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/changerole/**").hasAnyAuthority("ROLE_ZORO")
+                .requestMatchers(HttpMethod.GET,"/home/**").permitAll()
                 .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.logout(logout -> logout.logoutSuccessUrl("/users/signin/")

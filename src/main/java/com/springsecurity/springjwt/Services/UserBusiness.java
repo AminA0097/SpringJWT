@@ -45,7 +45,7 @@ public class UserBusiness {
                 authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
         User user = userRepo.findByusernamee(login.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(login.getUsername()));
-        String jwt = jwtService.generateToken(new UserDetailImp(user));
+        String jwt = jwtService.generateToken(new UserDetailImp(user));;
         return jwt;
     }
 

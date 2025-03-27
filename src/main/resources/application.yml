@@ -4,10 +4,6 @@ spring:
     username: postgres
     password: "@Amin0076"
     driver-class-name: org.postgresql.Driver
-  thymeleaf:
-    prefix: classpath:/templates/
-    suffix: .hmtl
-    cache: false
   jpa:
     hibernate:
       ddl-auto: none
