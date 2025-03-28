@@ -28,10 +28,10 @@ public class MappersImpl implements Mappers {
                             dtoField.setAccessible(true);
                             dtoField.set(userDto, value);
                         } catch (NoSuchFieldException e) {
-                            System.out.println(String.format("Field %s not found", field.getName()));
+                            log.warn("Field {} not found", field.getName());
                         }
                     } catch (IllegalAccessException e) {
-                        System.out.println(String.format("Field %s not accessible", field.getName()));
+                        log.warn("Field {} not accessible", field.getName());
                     }
                 }
                 userClass = userClass.getSuperclass();
