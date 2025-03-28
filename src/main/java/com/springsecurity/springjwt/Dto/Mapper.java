@@ -1,15 +1,15 @@
 package com.springsecurity.springjwt.Dto;
 
-import lombok.extern.slf4j.*;
+import com.springsecurity.springjwt.Entities.User;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import com.springsecurity.springjwt.Entities.User;
-
 @Service
-@Slf4j
-public class MappersImpl implements Mappers {
+public class Mapper implements Mappers{
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(Mapper.class);
 
     @Override
     public List<UserDto> userToDto(List<User> users) {

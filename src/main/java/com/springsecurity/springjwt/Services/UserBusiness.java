@@ -30,7 +30,7 @@ public class UserBusiness {
                         JwtService jwtService,
                         AuthenticationManager authenticationManager,
                         PasswordEncoder passwordEncoder,
-                        MappersImpl mappers
+                        Mapper mappers
                         ) {
         this.userRepo = userRepo;
         this.jwtService = jwtService;
@@ -45,7 +45,7 @@ public class UserBusiness {
     private final UserRepo userRepo;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final MappersImpl mappers;
+    private final Mapper mappers;
 
 
     public String signin(Login login) {
