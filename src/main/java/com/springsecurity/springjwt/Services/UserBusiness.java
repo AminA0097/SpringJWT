@@ -1,8 +1,6 @@
 package com.springsecurity.springjwt.Services;
 
-import com.springsecurity.springjwt.Dto.ChangeRole;
-import com.springsecurity.springjwt.Dto.Login;
-import com.springsecurity.springjwt.Dto.SignUp;
+import com.springsecurity.springjwt.Dto.*;
 import com.springsecurity.springjwt.Entities.User;
 import com.springsecurity.springjwt.Exception.UserErr;
 import com.springsecurity.springjwt.JwtService.JwtService;
@@ -21,17 +19,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 public class UserBusiness {
     private final PasswordEncoder passwordEncoder;
 
-    public UserBusiness(UserRepo userRepo, JwtService jwtService, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
+    public UserBusiness(UserRepo userRepo,
+                        JwtService jwtService,
+                        AuthenticationManager authenticationManager,
+                        PasswordEncoder passwordEncoder,
+                        MappersImpl mappers
+                        ) {
         this.userRepo = userRepo;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
+        this.mappers = mappers;
+
     }
 
     @Autowired
@@ -39,6 +45,8 @@ public class UserBusiness {
     private final UserRepo userRepo;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final MappersImpl mappers;
+
 
     public String signin(Login login) {
         authenticationManager.
@@ -77,7 +85,7 @@ public class UserBusiness {
     }
 
     @Transactional
-    public boolean changeRole(ChangeRole changeRole) {
+    public String changeRole(ChangeRole changeRole) {
         User user = entityManager.createQuery("SELECT p FROM User p WHERE p.usernamee = :name", User.class)
                 .setParameter("name", changeRole.getUsername())
                 .getSingleResult();
@@ -87,6 +95,23 @@ public class UserBusiness {
         user.setUsernamee(changeRole.getUsername());
         System.out.println(user.toString());
         entityManager.merge(user);
-        return true;
+        return String.format("Role Of %s Changed By %s", changeRole.getUsername(),
+                SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+    @Transactional
+    public String changeActivation(Activation activation) {
+        User user = entityManager.createQuery("SELECT p FROM User p WHERE p.usernamee = :name", User.class)
+                .setParameter("name", activation.getUsername())
+                .getSingleResult();
+        user.setEnabled(false);
+        user.setUpdatedDate(new Date());
+        user.setUpdated(SecurityContextHolder.getContext().getAuthentication().getName());
+        entityManager.merge(user);
+        return String.format("%s DeActivated! By %s",activation.getUsername(), SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+    @Transactional
+    public List<UserDto> getAll() {
+        List<User> users = userRepo.findAll();
+        return mappers.userToDto(users);
     }
 }

@@ -52,8 +52,9 @@ public class SecurityConfig  {
         http.authorizeHttpRequests(authReq -> authReq.requestMatchers(HttpMethod.POST,"users/signin/**").permitAll()
                 .requestMatchers(HttpMethod.POST,"/signup/**").permitAll()
                 .requestMatchers(HttpMethod.POST,"/signin/**").permitAll()
-                .requestMatchers(HttpMethod.POST,"/changerole/**").hasAnyAuthority("ROLE_ZORO")
-                .requestMatchers(HttpMethod.GET,"/home/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/changerole/**").hasAuthority("ROLE_ZORO")
+                .requestMatchers(HttpMethod.POST,"/activation/**").hasAuthority("ROLE_ZORO")
+                .requestMatchers(HttpMethod.GET,"/getall/**").hasAnyAuthority("ROLE_ADMIN","ROLE_ZORO")
                 .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.logout(logout -> logout.logoutSuccessUrl("/users/signin/")
